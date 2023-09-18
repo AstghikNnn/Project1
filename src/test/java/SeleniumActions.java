@@ -8,6 +8,7 @@ public class SeleniumActions {
     private static WebDriver driver;
 
     SeleniumActions(WebDriver driver) {
+
         this.driver = driver;
     }
 

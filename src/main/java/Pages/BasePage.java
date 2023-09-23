@@ -1,14 +1,14 @@
-import org.openqa.selenium.WebDriver;
+package Pages;
 
-public class BasePage implements Leadable{
+import org.openqa.selenium.WebDriver;
+import util.SeleniumActions;
+
+public abstract class BasePage implements Leadable{
     protected WebDriver driver;
     protected SeleniumActions actions;
     public BasePage(WebDriver driver){
         this.driver=driver;
+        this.actions = new SeleniumActions(driver);
     }
 
-    @Override
-    public boolean isDisplayed() {
-        return true;
-    }
 }

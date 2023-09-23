@@ -1,3 +1,6 @@
+package Pages;
+
+import Pages.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,5 +19,10 @@ import org.openqa.selenium.WebElement;
             passwordElement.sendKeys(password);
             WebElement button = driver.findElement(loginButtonLocator);
             button.click();
+        }
+
+        @Override
+        public boolean isDisplayed() {
+            return actions.isDisplayed(loginButtonLocator, 10);
         }
     }

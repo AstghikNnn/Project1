@@ -1,18 +1,35 @@
-import net.bytebuddy.description.annotation.AnnotationDescription;
+import Pages.HomePage;
+import Pages.LoginPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import util.SeleniumActions;
+import util.WebDriverUtil;
 
 import java.util.concurrent.TimeUnit;
 
 public class GitHubLogin {
+    @BeforeMethod
+    public void beforeM() {
+        driver = WebDriverUtil.getWebDriver();
+        driver.get("https://github.com/login");
+        LoginPage login = new LoginPage(driver);
+        login = new LoginPage(driver);
+        Assert.assertTrue(login.isDisplayed());
+    }
 
+    @AfterMethod
+    public void afterMethod() {
+        WebDriverUtil.closeDriver();
+    }
+
+    private WebDriver driver;
 
     //Login GitHub
 
@@ -23,19 +40,11 @@ public class GitHubLogin {
     // 4. Validate user is  logged in.
     @Test
     public void loginGitHub() {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.get("https://github.com/login");
-        HomePage HomePage=new HomePage(driver);
-        HomePage.driver("astghik.nikoghosyan.95@inbox.ru","");
-        WebElement emailElement = driver.findElement(By.name("login"));
-        emailElement.sendKeys("astghik.nikoghosyan.95@inbox.ru");
-        WebElement passwordElement = driver.findElement(By.name("password"));
-        passwordElement.sendKeys("----95");
-        WebElement loginElement = driver.findElement(By.name("commit"));
-        loginElement.click();
-        driver.quit();
+        LoginPage loginpage = new LoginPage(driver);
+        Assert.assertTrue(loginpage.isDisplayed());
+        loginpage.login("astghik.nikoghosyan.95@inbox.ru", "AstAstAst95");
+        HomePage homePage = new HomePage(driver);
+        Assert.assertTrue(homePage.isDisplayed());
     }
 
 
@@ -47,22 +56,15 @@ public class GitHubLogin {
     //3. Click on 'Sign In' button
     // 4. Validate user is not logged in and "Password is wrong" error is displayed
     @Test
-    public void invalidpassword() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-        ChromeDriver driver = new ChromeDriver();
-        driver.get("https://github.com/login");
-        WebElement emailElement = driver.findElement(By.id("login_field"));
-        emailElement.sendKeys("AstghikNik");
-        WebElement password = driver.findElement(By.id("password"));
-        password.sendKeys("---95");
-        WebElement loginElement = driver.findElement(By.name("commit"));
-        loginElement.click();
+    public void invalidpassword() {
+
+        LoginPage login = new LoginPage(driver);
+        Assert.assertTrue(login.isDisplayed());
+        login.login("AstghikNik", "---95");
         WebElement errorElement = driver.findElement(By.className("js-flash-alert"));
         Assert.assertEquals(errorElement.getText(), "Incorrect username or password.");
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.quit();
     }
-
 
     //This method is validating that user cannot log in with empty password.
 
@@ -73,18 +75,14 @@ public class GitHubLogin {
     // 4. Validate user is not logged in and "Password field is empty" error is displayed
     @Test
     public void testLoginWithEmptyPassword() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.get("https://github.com/login");
-        WebElement emailElement = driver.findElement(By.id("login_field"));
-        emailElement.sendKeys("astghik.nikoghosyan.95@inbox.ru");
-        WebElement signInElement = driver.findElement(By.name("commit"));
-        signInElement.click();
-        WebElement errorElement = driver.findElement(By.className("js-flash-alert"));
-        Assert.assertEquals(errorElement.getText(), "Incorrect username or password.");
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.quit();
+        LoginPage loginPage = new LoginPage(driver);
+        Assert.assertTrue(loginPage.isDisplayed());
+        loginPage.login("astghik.nikoghosyan.95@inbox.ru", "");
+        WebElement errorMessageElement = driver.findElement(By.className("js-flash-alert"));
+        Assert.assertEquals(errorMessageElement.getText(), "Incorrect username or password.");
     }
+}
+
 
     //Login GitHub page
 
@@ -93,8 +91,8 @@ public class GitHubLogin {
     //2. Input valid email
     //3. Click on 'Sign In' button
     // 4. Validate user is  logged in.
-    @Test
-    public void loginGitHub1() {
+    //@Test
+   /*public void loginGitHub1() {
         System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
         FirefoxDriver firefox=new FirefoxDriver();
         SeleniumActions actions=new SeleniumActions(firefox);
@@ -102,10 +100,8 @@ public class GitHubLogin {
         LoginPage loginPage = new LoginPage(firefox);
         Assert.assertTrue(loginPage.isDisplayed());
         loginPage.login("astghik.nikoghosyan.95@inbox.ru", "AstAstAst95");
-        boolean variable = actions.isDisplayed(By.className("js-flash-alert"), 10);
-        Assert.assertTrue(variable);
-        HomePage HomePage=new HomePage(firefox);
-        Assert.assertTrue(HomePage.isDisplayed());
+        HomePage homePage=new HomePage(firefox);
+        Assert.assertTrue(homePage.isDisplayed());
         firefox.quit();
     }
 
@@ -121,8 +117,8 @@ public class GitHubLogin {
         System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
         WebDriver driver2 = new FirefoxDriver();
         driver2.get("https://github.com/login");
-        HomePage HomePage=new HomePage(driver2);
-        HomePage.driver("astghik.nikoghosyan.95@inbox.ru","");
+        HomePage homePage=new HomePage(driver2);
+        Assert.assertTrue(homePage.isDisplayed());
         WebElement emailElement = driver2.findElement(By.name("login"));
         emailElement.sendKeys("astghik.nikoghosyan.95@inbox.ru");
         WebElement passwordElement = driver2.findElement(By.name("password"));
@@ -197,9 +193,11 @@ public class GitHubLogin {
         loginElement.click();
         By locatorOfAvatarElement = By.cssSelector("img[data-view-component='true']");
         SeleniumActions actions = new SeleniumActions(driver);
-        boolean isLocatorOfAvatarElementDisplayed = actions.isDisplayed(locatorOfAvatarElement, 5);
+        boolean isLocatorOfAvatarElementDisplayed = actions.isDisplayed(locatorOfAvatarElement, 25);
         Assert.assertTrue(isLocatorOfAvatarElementDisplayed);
-        driver.quit();
+        driver.findElement(locatorOfAvatarElement).click();
+        //driver.quit();
+
         //WebElement avatarElement = driver.findElement(By.cssSelector("img[data-view-component='true']"));
         //avatarElement.click();
         //Thread.sleep(3000);
@@ -224,4 +222,4 @@ public class GitHubLogin {
         Assert.assertTrue(isLocatorOfAvatarElementDisplayed);
         driver2.quit();
     }
-}
+}*/

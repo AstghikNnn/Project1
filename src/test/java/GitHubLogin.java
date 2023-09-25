@@ -14,22 +14,21 @@ import util.WebDriverUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class GitHubLogin {
+public class GitHubLogin{
+ private WebDriver driver;
+private LoginPage login;
     @BeforeMethod
-    public void beforeM() {
-        driver = WebDriverUtil.getWebDriver();
+    public void beforeTest(){
+        driver= WebDriverUtil.getWebDriver();
         driver.get("https://github.com/login");
-        LoginPage login = new LoginPage(driver);
-        login = new LoginPage(driver);
+        login=new LoginPage(driver);
         Assert.assertTrue(login.isDisplayed());
     }
 
     @AfterMethod
-    public void afterMethod() {
+    public void afterTest(){
         WebDriverUtil.closeDriver();
     }
-
-    private WebDriver driver;
 
     //Login GitHub
 
@@ -40,9 +39,7 @@ public class GitHubLogin {
     // 4. Validate user is  logged in.
     @Test
     public void loginGitHub() {
-        LoginPage loginpage = new LoginPage(driver);
-        Assert.assertTrue(loginpage.isDisplayed());
-        loginpage.login("astghik.nikoghosyan.95@inbox.ru", "AstAstAst95");
+        login.login("astghik.nikoghosyan.95@inbox.ru", "AstAstAst95");
         HomePage homePage = new HomePage(driver);
         Assert.assertTrue(homePage.isDisplayed());
     }
@@ -58,8 +55,6 @@ public class GitHubLogin {
     @Test
     public void invalidpassword() {
 
-        LoginPage login = new LoginPage(driver);
-        Assert.assertTrue(login.isDisplayed());
         login.login("AstghikNik", "---95");
         WebElement errorElement = driver.findElement(By.className("js-flash-alert"));
         Assert.assertEquals(errorElement.getText(), "Incorrect username or password.");
@@ -75,9 +70,8 @@ public class GitHubLogin {
     // 4. Validate user is not logged in and "Password field is empty" error is displayed
     @Test
     public void testLoginWithEmptyPassword() throws InterruptedException {
-        LoginPage loginPage = new LoginPage(driver);
-        Assert.assertTrue(loginPage.isDisplayed());
-        loginPage.login("astghik.nikoghosyan.95@inbox.ru", "");
+
+        login.login("astghik.nikoghosyan.95@inbox.ru", "");
         WebElement errorMessageElement = driver.findElement(By.className("js-flash-alert"));
         Assert.assertEquals(errorMessageElement.getText(), "Incorrect username or password.");
     }
